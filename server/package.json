@@ -1,0 +1,26 @@
+{
+  "name": "integration-testing",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
+    "test": "jest --watchAll --verbose"
+  },
+  "dependencies": {
+    "config": "^3.1.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "dotenv": "^8.0.0",
+    "express": "~4.16.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "~1.9.0",
+    "sequelize": "^5.8.7",
+    "sqlite3": "^4.0.8"
+  },
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "jest": "^24.8.0",
+    "supertest": "^4.0.2"
+  }
+}
