@@ -24,4 +24,8 @@ app.use("*", (req, res, next) => {
   res.sendFile("index.html", { root: __dirname + "/public" });
 });
 
+process.on("unhandledRejection", err => {
+  console.error(err.message);
+});
+
 module.exports = app;

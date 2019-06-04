@@ -1,6 +1,7 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 const { User } = require("../models");
+const { schemas, validate } = require("../util/joiValidate");
 
 router.get("/", async function(req, res, next) {
   const users = await User.findAll({ raw: true });
@@ -15,6 +16,8 @@ router.get("/:id", async function(req, res, next) {
 });
 
 router.post("/", async function(req, res, next) {
+  if (validate(req.body, schemas.users.createUser).error)
+    return res.status(400).send("Invalid Input");
   const user = await User.create({
     name: req.body.name,
     age: req.body.age
@@ -25,8 +28,8 @@ router.post("/", async function(req, res, next) {
 router.put("/:id", async function(req, res, next) {
   const user = await User.findByPk(req.params.id);
   if (!user) return res.status(404).send("No user found");
-  user.set("name", req.body.name);
-  user.set("age", req.body.age);
+  if (req.body.name) user.set("name", req.body.name);
+  if (req.body.age) user.set("age", req.body.age);
   await user.save();
   res.status(200).send(user.toJSON());
 });

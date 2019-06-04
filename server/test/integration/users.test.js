@@ -2,7 +2,9 @@ const request = require("supertest");
 const { User } = require("../../models");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const { createSomeUser } = require("../../seeds/user");
+const db = require("../../util/database");
+
+// const { createSomeUser } = require("../../seeds/user");
 
 let server;
 const endPoints = {
@@ -14,12 +16,12 @@ const endPoints = {
 };
 
 describe("/user", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    await db.sync({ force: true });
     server = require("../../bin/www");
   });
-  afterEach(async () => {
+  afterEach(() => {
     server.close();
-    await User.sync({ force: true });
   });
   describe("GET /", () => {
     it("should return all available users", async () => {
@@ -42,6 +44,15 @@ describe("/user", () => {
   });
 
   describe("POST /", () => {
+    it("should return 400 response if necessary data is not given", async () => {
+      const userData = { name: "test" };
+      const res = await request(server)
+        .post(endPoints.createUser())
+        .send(userData);
+      const users = await User.findAll({ raw: true });
+      expect(res.status).toBe(400);
+      expect(users.length).toBe(0);
+    });
     it("should create a user with given input", async () => {
       const userData = { name: "test", age: 1 };
       const res = await request(server)
