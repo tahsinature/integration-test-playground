@@ -7,6 +7,8 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const response = require("./util/response");
+const { debugError } = require("./util/debug");
 
 const apiRoutes = require("./routes/index");
 
@@ -23,9 +25,15 @@ app.use("/api", apiRoutes);
 app.use("*", (req, res, next) => {
   res.sendFile("index.html", { root: __dirname + "/public" });
 });
+app.use((err, req, res, next) => {
+  if (err) {
+    response.error(err.message || "Internal Server Error", res);
+  }
+});
 
 process.on("unhandledRejection", err => {
-  console.error(err.message);
+  if (err.message === "Invalid Input") return;
+  debugError(err.message);
 });
 
 module.exports = app;

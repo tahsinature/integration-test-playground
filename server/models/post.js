@@ -5,7 +5,10 @@ class Post extends Model {}
 
 Post.init(
   {
-    body: DataTypes.TEXT
+    body: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    }
   },
   {
     sequelize: db

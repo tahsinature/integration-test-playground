@@ -24,7 +24,7 @@ module.exports = {
     });
     return response;
   },
-  invalidInput(message, res, flag = "0") {
+  badRequest(message, res, flag = "0") {
     const response = res.status(400).json({
       success: false,
       flag,

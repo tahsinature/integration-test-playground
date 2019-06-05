@@ -20,7 +20,8 @@ describe("/user", () => {
     await db.sync({ force: true });
     server = require("../../bin/www");
   });
-  afterEach(() => {
+  afterEach(async () => {
+    await db.sync({ force: true });
     server.close();
   });
   describe("GET /", () => {
