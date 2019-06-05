@@ -11,7 +11,7 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  validate(req.body, schemas.posts.createPost, next);
+  await validate(req.body, schemas.posts.createPost, next);
   const user = await User.findByPk(req.user.id).catch(err => {
     next(err);
     throw err;

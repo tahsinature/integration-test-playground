@@ -21,12 +21,24 @@ module.exports.schemas = {
   }
 };
 
-module.exports.validate = (data, schema, next) => {
-  const { error } = Joi.validate(data, schema);
-  if (error) {
-    error.message = "Invalid Input";
-    error.httpCode = 400;
-    next(error);
-    throw error;
-  }
-};
+// module.exports.validate = (data, schema, next) => {
+//   const { error } = Joi.validate(data, schema);
+//   if (error) {
+//     error.message = "Invalid Input";
+//     error.httpCode = 400;
+//     next(error);
+//     throw error;
+//   }
+// };
+
+module.exports.validate = (data, schema, next) =>
+  new Promise((res, rej) => {
+    const { error } = Joi.validate(data, schema);
+    if (error) {
+      error.message = "Invalid Input";
+      error.httpCode = 400;
+      next(error);
+      rej(error);
+    }
+    res();
+  });

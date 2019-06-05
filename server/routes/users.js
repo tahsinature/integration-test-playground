@@ -5,14 +5,14 @@ const { User } = require("../models");
 const { schemas, validate } = require("../util/joiValidate");
 
 router.get("/", async function(req, res, next) {
-  validate(req.body, {}, next);
+  await validate(req.body, {}, next);
   const users = await User.findAll({ raw: true });
   if (users.length < 1) return response.notFound("No users found", res);
   response.success("Found Users", res, users);
 });
 
 router.post("/", async function(req, res, next) {
-  validate(req.body, schemas.users.createUser, next);
+  await validate(req.body, schemas.users.createUser, next);
   const user = await User.create({
     name: req.body.name,
     age: req.body.age
@@ -21,14 +21,14 @@ router.post("/", async function(req, res, next) {
 });
 
 router.get("/:id", async function(req, res, next) {
-  validate(req.body, {}, next);
+  await validate(req.body, {}, next);
   const user = await User.findByPk(req.params.id, { raw: true });
   if (!user) return response.notFound("No User Found", res);
   response.success("User Found", res, user);
 });
 
 router.put("/:id", async function(req, res, next) {
-  validate(req.body, schemas.users.editUser, next);
+  await validate(req.body, schemas.users.editUser, next);
   const user = await User.findByPk(req.params.id).catch(err => {
     next(err);
     throw err;
@@ -41,7 +41,7 @@ router.put("/:id", async function(req, res, next) {
 });
 
 router.delete("/:id", async function(req, res, next) {
-  validate(req.body, {}, next);
+  await validate(req.body, {}, next);
   const user = await User.findByPk(req.params.id);
   if (!user) return res.status(404).send("No user found");
   await user.destroy();
