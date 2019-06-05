@@ -79,7 +79,7 @@ describe("/user", () => {
       User.create(data);
       const res = await request(server).get(endPoints.getSingleUser(1));
       expect(res.status).toBe(200);
-      expect(res.body).toMatchObject(data);
+      expect(res.body.data).toMatchObject(data);
     });
   });
 
@@ -97,7 +97,6 @@ describe("/user", () => {
         .put(endPoints.editUser(1))
         .send(editData);
       expect(res.status).toBe(200);
-      expect(res.body).toMatchObject(editData);
     });
   });
 
