@@ -7,8 +7,8 @@ const { schemas, validate } = require("../util/joiValidate");
 router.get("/", async function(req, res, next) {
   validate(req.body, {}, next);
   const users = await User.findAll({ raw: true });
-  if (users.length < 1) return res.status(404).send("No users found");
-  res.status(200).send(users);
+  if (users.length < 1) return response.notFound("No users found", res);
+  response.success("Found Users", res, users);
 });
 
 router.post("/", async function(req, res, next) {
@@ -23,8 +23,8 @@ router.post("/", async function(req, res, next) {
 router.get("/:id", async function(req, res, next) {
   validate(req.body, {}, next);
   const user = await User.findByPk(req.params.id, { raw: true });
-  if (!user) return res.status(404).send("No User Found");
-  res.status(200).send(user);
+  if (!user) return response.notFound("No User Found", res);
+  response.success("User Found", res, user);
 });
 
 router.put("/:id", async function(req, res, next) {
@@ -37,7 +37,7 @@ router.put("/:id", async function(req, res, next) {
   if (req.body.name) user.set("name", req.body.name);
   if (req.body.age) user.set("age", req.body.age);
   await user.save();
-  response.success("User Edited", res, user.toJSON);
+  response.success("User Edited", res, user.toJSON());
 });
 
 router.delete("/:id", async function(req, res, next) {

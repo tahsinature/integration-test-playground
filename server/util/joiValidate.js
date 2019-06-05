@@ -25,6 +25,7 @@ module.exports.validate = (data, schema, next) => {
   const { error } = Joi.validate(data, schema);
   if (error) {
     error.message = "Invalid Input";
+    error.httpCode = 400;
     next(error);
     throw error;
   }

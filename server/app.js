@@ -27,7 +27,12 @@ app.use("*", (req, res, next) => {
 });
 app.use((err, req, res, next) => {
   if (err) {
-    response.error(err.message || "Internal Server Error", res);
+    const data = {
+      success: false,
+      message: err.message || "Internal Server Error"
+    };
+    res.status(err.httpCode || 500);
+    return res.json(data);
   }
 });
 

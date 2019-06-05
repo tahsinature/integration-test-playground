@@ -34,9 +34,9 @@ describe("/user", () => {
       User.bulkCreate(bulkData);
       const res = await request(server).get(endPoints.getAllUsers());
       expect(res.status).toBe(200);
-      expect(res.body.length).toBe(3);
-      expect(res.body.some(ele => ele.name === "user1")).toBeTruthy();
-      expect(res.body).toMatchObject(bulkData);
+      expect(res.body.result.length).toBe(3);
+      expect(res.body.result.some(ele => ele.name === "user1")).toBeTruthy();
+      expect(res.body.result).toMatchObject(bulkData);
     });
     it("should return 404 error if there is no users in DB", async () => {
       const res = await request(server).get(endPoints.getAllUsers());
@@ -46,13 +46,10 @@ describe("/user", () => {
 
   describe("POST /", () => {
     it("should return 400 response if necessary data is not given", async () => {
-      const userData = { name: "test" };
       const res = await request(server)
         .post(endPoints.createUser())
-        .send(userData);
-      const users = await User.findAll({ raw: true });
+        .send({ name: "a" });
       expect(res.status).toBe(400);
-      expect(users.length).toBe(0);
     });
     it("should create a user with given input", async () => {
       const userData = { name: "test", age: 1 };
@@ -60,10 +57,13 @@ describe("/user", () => {
         .post(endPoints.createUser())
         .send(userData);
       const users = await User.findAll({ raw: true });
-      expect(res.status).toBe(201);
+      expect(res.status).toBe(200);
       expect(users.length).toBe(1);
       expect(users[0]).toMatchObject(userData);
-      const decoded = jwt.verify(res.body.token, config.get("jwtPrivateKey"));
+      const decoded = jwt.verify(
+        res.body.result.token,
+        config.get("jwtPrivateKey")
+      );
       expect(decoded.id).toBe(users[0].id);
     });
   });
@@ -79,7 +79,7 @@ describe("/user", () => {
       User.create(data);
       const res = await request(server).get(endPoints.getSingleUser(1));
       expect(res.status).toBe(200);
-      expect(res.body.data).toMatchObject(data);
+      expect(res.body.result).toMatchObject(data);
     });
   });
 
